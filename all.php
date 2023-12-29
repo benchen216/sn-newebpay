@@ -1,5 +1,5 @@
 <?php
-require_once('conf.php');
+require_once('config/conf.php');
 require_once('mwt-newebpay_sdk.php');
 
 /* 金鑰與版本設定 */
@@ -13,7 +13,7 @@ $VER = $ver;
 $trade_info_arr = array(
 	'MerchantID' => $merchantID,
 	'RespondType' => 'JSON',
-	'TimeStamp' => 1485232229,
+	'TimeStamp' => time(),
 	'Version' => $VER,
 	'MerchantOrderNo' => getOrderNo(),
 	'Amt' => $NTD,
@@ -26,6 +26,7 @@ $trade_info_arr = array(
 );
 
 if (isset($_GET['pay']) == 1 && $_GET['pay'] == "y"){
+    error_log(implode(', ', $trade_info_arr));
 	$TradeInfo = create_mpg_aes_encrypt($trade_info_arr, $HashKey, $HashIV);
 	$SHA256 = strtoupper(hash("sha256", SHA256($HashKey,$TradeInfo,$HashIV)));
 	echo CheckOut($URL,$MerchantID,$TradeInfo,$SHA256,$VER);
